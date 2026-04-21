@@ -1,0 +1,315 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Quantum Flux | 极客视界</title>
+    <style>
+        :root {
+            --primary-bg: #050505;
+            --accent-color: #00f2ff;
+            --text-main: #ffffff;
+            --glass-bg: rgba(255, 255, 255, 0.03);
+            --border-color: rgba(255, 255, 255, 0.1);
+            --font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            cursor: none; /* 自定义光标 */
+        }
+
+        body {
+            background-color: var(--primary-bg);
+            color: var(--text-main);
+            font-family: var(--font-family);
+            overflow-x: hidden;
+            line-height: 1.6;
+        }
+
+        /* 画布底层 */
+        #canvas-container {
+            position: fixed;
+            top: 0;
+            left: 0;
+            z-index: 0;
+            pointer-events: none;
+        }
+
+        /* 自定义光标 */
+        #custom-cursor {
+            width: 20px;
+            height: 20px;
+            background: var(--accent-color);
+            border-radius: 50%;
+            position: fixed;
+            pointer-events: none;
+            z-index: 9999;
+            mix-blend-mode: difference;
+            transition: transform 0.2s ease-out;
+        }
+
+        /* 布局容器 */
+        main {
+            position: relative;
+            z-index: 1;
+            padding: 0 5%;
+        }
+
+        nav {
+            height: 100px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            backdrop-filter: blur(10px);
+            border-bottom: 1px solid var(--border-color);
+            position: sticky;
+            top: 0;
+        }
+
+        .logo {
+            font-size: 1.5rem;
+            font-weight: 800;
+            letter-spacing: -1px;
+            background: linear-gradient(90deg, #fff, var(--accent-color));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        /* Hero 部分 */
+        .hero {
+            height: calc(100vh - 100px);
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: flex-start;
+        }
+
+        .hero h1 {
+            font-size: clamp(3rem, 10vw, 8rem);
+            line-height: 0.9;
+            font-weight: 900;
+            text-transform: uppercase;
+            margin-bottom: 2rem;
+            opacity: 0;
+            transform: translateY(50px);
+            animation: reveal 1s cubic-bezier(0.77, 0, 0.175, 1) forwards;
+        }
+
+        @keyframes reveal {
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        /* Bento Grid 布局 */
+        .grid-container {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 20px;
+            padding-bottom: 100px;
+        }
+
+        .card {
+            background: var(--glass-bg);
+            border: 1px solid var(--border-color);
+            border-radius: 24px;
+            padding: 40px;
+            backdrop-filter: blur(20px);
+            transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .card:hover {
+            transform: translateY(-10px) scale(1.02);
+            border-color: var(--accent-color);
+            box-shadow: 0 20px 40px rgba(0, 242, 255, 0.1);
+        }
+
+        .card h3 {
+            font-size: 1.5rem;
+            margin-bottom: 15px;
+            color: var(--accent-color);
+        }
+
+        .card p {
+            font-size: 0.9rem;
+            opacity: 0.7;
+        }
+
+        /* 进度条动画 */
+        .skill-bar {
+            width: 100%;
+            height: 4px;
+            background: rgba(255,255,255,0.1);
+            margin-top: 20px;
+            border-radius: 2px;
+            overflow: hidden;
+        }
+
+        .skill-progress {
+            height: 100%;
+            background: var(--accent-color);
+            width: 0;
+            transition: width 1.5s ease-in-out;
+        }
+
+        /* 响应式调整 */
+        @media (max-width: 768px) {
+            .hero h1 { font-size: 4rem; }
+        }
+    </style>
+</head>
+<body>
+
+    <div id="custom-cursor"></div>
+    <canvas id="canvas-container"></canvas>
+
+    <main>
+        <nav>
+            <div class="logo">QUANTUM.IO</div>
+            <div style="font-size: 0.8rem; opacity: 0.6;">TECH STACK: HTML5 / ES6+ / WEBGL</div>
+        </nav>
+
+        <section class="hero">
+            <h1>DIGITAL<br><span style="color: var(--accent-color)">ARCHITECT</span></h1>
+            <p style="max-width: 600px; font-size: 1.2rem; opacity: 0.8;">
+                探索代码与美学的边界。通过高级数学模型与现代 Web 引擎，构建下一代交互式数字体验。
+            </p>
+        </section>
+
+        <section class="grid-container">
+            <div class="card">
+                <h3>神经网络渲染</h3>
+                <p>基于原生 Canvas API 构建的高性能粒子系统，支持万级点位实时物理交互。</p>
+                <div class="skill-bar"><div class="skill-progress" style="width: 95%"></div></div>
+            </div>
+            <div class="card">
+                <h3>响应式架构</h3>
+                <p>使用 CSS Grid 与 Flexbox 打造的流式布局，完美适配从 Watch 到 8K 屏幕。</p>
+                <div class="skill-bar"><div class="skill-progress" style="width: 88%"></div></div>
+            </div>
+            <div class="card">
+                <h3>视觉动力学</h3>
+                <p>结合贝塞尔曲线动画与 GPU 加速属性，实现 0 掉帧的丝滑交互体验。</p>
+                <div class="skill-bar"><div class="skill-progress" style="width: 92%"></div></div>
+            </div>
+        </section>
+    </main>
+
+    <script>
+        // --- 1. 粒子系统核心 ---
+        const canvas = document.getElementById('canvas-container');
+        const ctx = canvas.getContext('2d');
+        let particles = [];
+        const mouse = { x: null, y: null, radius: 150 };
+
+        window.addEventListener('resize', initCanvas);
+        function initCanvas() {
+            canvas.width = window.innerWidth;
+            canvas.height = window.innerHeight;
+            initParticles();
+        }
+
+        class Particle {
+            constructor(x, y) {
+                this.x = x;
+                this.y = y;
+                this.size = Math.random() * 2 + 1;
+                this.baseX = this.x;
+                this.baseY = this.y;
+                this.density = (Math.random() * 30) + 1;
+            }
+
+            draw() {
+                ctx.fillStyle = 'rgba(0, 242, 255, 0.5)';
+                ctx.beginPath();
+                ctx.arc(this.x, this.y, this.size, 0, Math.PI * 2);
+                ctx.closePath();
+                ctx.fill();
+            }
+
+            update() {
+                let dx = mouse.x - this.x;
+                let dy = mouse.y - this.y;
+                let distance = Math.sqrt(dx * dx + dy * dy);
+                let forceDirectionX = dx / distance;
+                let forceDirectionY = dy / distance;
+                let maxDistance = mouse.radius;
+                let force = (maxDistance - distance) / maxDistance;
+                let directionX = forceDirectionX * force * this.density;
+                let directionY = forceDirectionY * force * this.density;
+
+                if (distance < mouse.radius) {
+                    this.x -= directionX;
+                    this.y -= directionY;
+                } else {
+                    if (this.x !== this.baseX) {
+                        let dx = this.x - this.baseX;
+                        this.x -= dx / 10;
+                    }
+                    if (this.y !== this.baseY) {
+                        let dy = this.y - this.baseY;
+                        this.y -= dy / 10;
+                    }
+                }
+            }
+        }
+
+        function initParticles() {
+            particles = [];
+            const numberOfParticles = (canvas.width * canvas.height) / 5000;
+            for (let i = 0; i < numberOfParticles; i++) {
+                let x = Math.random() * canvas.width;
+                let y = Math.random() * canvas.height;
+                particles.push(new Particle(x, y));
+            }
+        }
+
+        function animate() {
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+            for (let i = 0; i < particles.length; i++) {
+                particles[i].draw();
+                particles[i].update();
+            }
+            requestAnimationFrame(animate);
+        }
+
+        // --- 2. 交互控制 ---
+        const cursor = document.getElementById('custom-cursor');
+        
+        window.addEventListener('mousemove', (e) => {
+            mouse.x = e.x;
+            mouse.y = e.y;
+            // 光标平滑跟随
+            cursor.style.transform = `translate(${e.clientX - 10}px, ${e.clientY - 10}px)`;
+        });
+
+        // 磁性按钮效果
+        document.querySelectorAll('.card').forEach(card => {
+            card.addEventListener('mouseenter', () => {
+                cursor.style.transform += ' scale(4)';
+                cursor.style.background = 'white';
+            });
+            card.addEventListener('mouseleave', () => {
+                cursor.style.transform = cursor.style.transform.replace(' scale(4)', '');
+                cursor.style.background = 'var(--accent-color)';
+            });
+        });
+
+        // --- 3. 初始化 ---
+        initCanvas();
+        animate();
+
+        // 模拟加载后的进度条动画
+        window.addEventListener('load', () => {
+            document.querySelectorAll('.skill-progress').forEach(el => {
+                const width = el.style.width;
+                el.style.width = '0';
+                setTimeout(() => el.style.width = width, 500);
+            });
+        });
+    </script>
+</body>
+</html>

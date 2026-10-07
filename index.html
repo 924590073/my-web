@@ -1,315 +1,140 @@
 <!DOCTYPE html>
 <html lang="zh-CN">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Quantum Flux | 极客视界</title>
-    <style>
-        :root {
-            --primary-bg: #050505;
-            --accent-color: #00f2ff;
-            --text-main: #ffffff;
-            --glass-bg: rgba(255, 255, 255, 0.03);
-            --border-color: rgba(255, 255, 255, 0.1);
-            --font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
-        }
-
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-            cursor: none; /* 自定义光标 */
-        }
-
-        body {
-            background-color: var(--primary-bg);
-            color: var(--text-main);
-            font-family: var(--font-family);
-            overflow-x: hidden;
-            line-height: 1.6;
-        }
-
-        /* 画布底层 */
-        #canvas-container {
-            position: fixed;
-            top: 0;
-            left: 0;
-            z-index: 0;
-            pointer-events: none;
-        }
-
-        /* 自定义光标 */
-        #custom-cursor {
-            width: 20px;
-            height: 20px;
-            background: var(--accent-color);
-            border-radius: 50%;
-            position: fixed;
-            pointer-events: none;
-            z-index: 9999;
-            mix-blend-mode: difference;
-            transition: transform 0.2s ease-out;
-        }
-
-        /* 布局容器 */
-        main {
-            position: relative;
-            z-index: 1;
-            padding: 0 5%;
-        }
-
-        nav {
-            height: 100px;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            backdrop-filter: blur(10px);
-            border-bottom: 1px solid var(--border-color);
-            position: sticky;
-            top: 0;
-        }
-
-        .logo {
-            font-size: 1.5rem;
-            font-weight: 800;
-            letter-spacing: -1px;
-            background: linear-gradient(90deg, #fff, var(--accent-color));
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-        }
-
-        /* Hero 部分 */
-        .hero {
-            height: calc(100vh - 100px);
-            display: flex;
-            flex-direction: column;
-            justify-content: center;
-            align-items: flex-start;
-        }
-
-        .hero h1 {
-            font-size: clamp(3rem, 10vw, 8rem);
-            line-height: 0.9;
-            font-weight: 900;
-            text-transform: uppercase;
-            margin-bottom: 2rem;
-            opacity: 0;
-            transform: translateY(50px);
-            animation: reveal 1s cubic-bezier(0.77, 0, 0.175, 1) forwards;
-        }
-
-        @keyframes reveal {
-            to { opacity: 1; transform: translateY(0); }
-        }
-
-        /* Bento Grid 布局 */
-        .grid-container {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
-            gap: 20px;
-            padding-bottom: 100px;
-        }
-
-        .card {
-            background: var(--glass-bg);
-            border: 1px solid var(--border-color);
-            border-radius: 24px;
-            padding: 40px;
-            backdrop-filter: blur(20px);
-            transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
-            position: relative;
-            overflow: hidden;
-        }
-
-        .card:hover {
-            transform: translateY(-10px) scale(1.02);
-            border-color: var(--accent-color);
-            box-shadow: 0 20px 40px rgba(0, 242, 255, 0.1);
-        }
-
-        .card h3 {
-            font-size: 1.5rem;
-            margin-bottom: 15px;
-            color: var(--accent-color);
-        }
-
-        .card p {
-            font-size: 0.9rem;
-            opacity: 0.7;
-        }
-
-        /* 进度条动画 */
-        .skill-bar {
-            width: 100%;
-            height: 4px;
-            background: rgba(255,255,255,0.1);
-            margin-top: 20px;
-            border-radius: 2px;
-            overflow: hidden;
-        }
-
-        .skill-progress {
-            height: 100%;
-            background: var(--accent-color);
-            width: 0;
-            transition: width 1.5s ease-in-out;
-        }
-
-        /* 响应式调整 */
-        @media (max-width: 768px) {
-            .hero h1 { font-size: 4rem; }
-        }
-    </style>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="QUANTUM — Three.js 场景图、自定义着色器与模块化前端的精密交互实验室。">
+  <title>QUANTUM</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link rel="preconnect" href="https://cdn.jsdelivr.net" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500&family=IBM+Plex+Sans:wght@400;500;600&family=Syne:wght@600;700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="css/tokens.css">
+  <link rel="stylesheet" href="css/base.css">
+  <link rel="stylesheet" href="css/layout.css">
+  <script type="importmap">
+  {
+    "imports": {
+      "three": "https://cdn.jsdelivr.net/npm/three@0.170.0/build/three.module.js"
+    }
+  }
+  </script>
 </head>
 <body>
+  <div id="cursor" class="cursor" aria-hidden="true"></div>
 
-    <div id="custom-cursor"></div>
-    <canvas id="canvas-container"></canvas>
+  <div class="site">
+    <nav class="site-nav" aria-label="主导航">
+      <a class="brand" href="#top">QUANTUM<span>.</span></a>
+      <ul class="nav-links">
+        <li><a href="#approach">Approach</a></li>
+        <li><a href="#signal">Signal</a></li>
+        <li><a href="#contact">Contact</a></li>
+      </ul>
+    </nav>
 
-    <main>
-        <nav>
-            <div class="logo">QUANTUM.IO</div>
-            <div style="font-size: 0.8rem; opacity: 0.6;">TECH STACK: HTML5 / ES6+ / WEBGL</div>
-        </nav>
+    <header class="hero" id="top">
+      <canvas id="hero-canvas" class="hero-canvas" aria-hidden="true"></canvas>
+      <div class="hero-fallback" aria-hidden="true"></div>
+      <div class="hero-veil" aria-hidden="true"></div>
+      <div class="hero-content">
+        <p class="hero-brand hero-anim">
+          QUANTUM<span class="accent">.</span>
+        </p>
+        <h1 class="hero-title hero-anim delay-1">精密场中的前端工程</h1>
+        <p class="hero-lead hero-anim delay-2">
+          Three.js 场景图、自定义 ShaderMaterial 与模块化 ES 架构——用可运行的三维系统证明技术力。
+        </p>
+        <div class="cta-row hero-anim delay-3">
+          <a class="btn btn-primary" href="#approach" data-magnet>查看方法</a>
+          <a class="btn btn-ghost" href="#signal" data-magnet>实时信号</a>
+        </div>
+      </div>
+    </header>
 
-        <section class="hero">
-            <h1>DIGITAL<br><span style="color: var(--accent-color)">ARCHITECT</span></h1>
-            <p style="max-width: 600px; font-size: 1.2rem; opacity: 0.8;">
-                探索代码与美学的边界。通过高级数学模型与现代 Web 引擎，构建下一代交互式数字体验。
-            </p>
-        </section>
-
-        <section class="grid-container">
-            <div class="card">
-                <h3>神经网络渲染</h3>
-                <p>基于原生 Canvas API 构建的高性能粒子系统，支持万级点位实时物理交互。</p>
-                <div class="skill-bar"><div class="skill-progress" style="width: 95%"></div></div>
+    <section class="section" id="approach" aria-labelledby="approach-heading">
+      <div class="section-inner">
+        <p class="section-label mono reveal">Approach</p>
+        <h2 id="approach-heading" class="section-heading reveal">三件真实在跑的事</h2>
+        <ol class="approach-list">
+          <li class="approach-item reveal">
+            <span class="approach-index" aria-hidden="true">01</span>
+            <div>
+              <h3>Three.js 场景渲染</h3>
+              <p>
+                WebGLRenderer + 透视相机；ShaderMaterial 噪声流场作全 bleed 背景，
+                半透明 Icosahedron 与线框/环轨响应指针，点光随动。
+              </p>
             </div>
-            <div class="card">
-                <h3>响应式架构</h3>
-                <p>使用 CSS Grid 与 Flexbox 打造的流式布局，完美适配从 Watch 到 8K 屏幕。</p>
-                <div class="skill-bar"><div class="skill-progress" style="width: 88%"></div></div>
+          </li>
+          <li class="approach-item reveal">
+            <span class="approach-index" aria-hidden="true">02</span>
+            <div>
+              <h3>模块化工程</h3>
+              <p>
+                importmap 引入 three；CSS 令牌与布局分离；JS 按 webgl / ui / utils 拆分，
+                无打包链即可部署。
+              </p>
             </div>
-            <div class="card">
-                <h3>视觉动力学</h3>
-                <p>结合贝塞尔曲线动画与 GPU 加速属性，实现 0 掉帧的丝滑交互体验。</p>
-                <div class="skill-bar"><div class="skill-progress" style="width: 92%"></div></div>
+          </li>
+          <li class="approach-item reveal">
+            <span class="approach-index" aria-hidden="true">03</span>
+            <div>
+              <h3>动效与可访问性</h3>
+              <p>
+                磁吸光标、滚动显现；遵循 prefers-reduced-motion，页签隐藏时暂停 rAF，移动端关闭自定义光标。
+              </p>
             </div>
-        </section>
-    </main>
+          </li>
+        </ol>
+      </div>
+    </section>
 
-    <script>
-        // --- 1. 粒子系统核心 ---
-        const canvas = document.getElementById('canvas-container');
-        const ctx = canvas.getContext('2d');
-        let particles = [];
-        const mouse = { x: null, y: null, radius: 150 };
+    <section class="section" id="signal" aria-labelledby="signal-heading">
+      <div class="section-inner">
+        <p class="section-label mono reveal">Signal</p>
+        <h2 id="signal-heading" class="section-heading reveal">渲染仍在线上</h2>
+        <div class="signal-panel reveal" data-magnet>
+          <div class="signal-cell">
+            <p class="label mono">FPS</p>
+            <p class="value"><span id="stat-fps">—</span></p>
+          </div>
+          <div class="signal-cell">
+            <p class="label mono">Quality</p>
+            <p class="value"><span id="stat-quality">—</span><span class="unit">%</span></p>
+          </div>
+          <div class="signal-cell">
+            <p class="label mono">Backend</p>
+            <p class="value" style="font-size:1.25rem"><span id="stat-backend">—</span></p>
+          </div>
+        </div>
+        <p class="signal-note reveal">
+          帧时超预算时自动降低 pixelRatio；场景时间 <span id="stat-time" class="mono">0.0</span>s。
+          Three.js / WebGL 不可用时回退 CSS 网格，页面仍可读。
+        </p>
+      </div>
+    </section>
 
-        window.addEventListener('resize', initCanvas);
-        function initCanvas() {
-            canvas.width = window.innerWidth;
-            canvas.height = window.innerHeight;
-            initParticles();
-        }
+    <section class="section contact" id="contact" aria-labelledby="contact-heading">
+      <div class="section-inner">
+        <p class="section-label mono reveal">Contact</p>
+        <h2 id="contact-heading" class="section-heading reveal">一起把想法做成系统</h2>
+        <p class="contact-lead reveal">
+          需要高性能视觉层、严谨前端架构，或愿意拆开源码一起讨论——直接说。
+        </p>
+        <div class="cta-row reveal">
+          <a class="btn btn-primary" href="mailto:hello@quantum.local" data-magnet>发送邮件</a>
+          <a class="btn btn-ghost" href="https://924590073.github.io/my-web" data-magnet target="_blank" rel="noopener noreferrer">在线版本</a>
+        </div>
+      </div>
+    </section>
 
-        class Particle {
-            constructor(x, y) {
-                this.x = x;
-                this.y = y;
-                this.size = Math.random() * 2 + 1;
-                this.baseX = this.x;
-                this.baseY = this.y;
-                this.density = (Math.random() * 30) + 1;
-            }
+    <footer class="site-footer">
+      <span class="mono">QUANTUM / lab build</span>
+      <span>Three.js · 无构建链</span>
+    </footer>
+  </div>
 
-            draw() {
-                ctx.fillStyle = 'rgba(0, 242, 255, 0.5)';
-                ctx.beginPath();
-                ctx.arc(this.x, this.y, this.size, 0, Math.PI * 2);
-                ctx.closePath();
-                ctx.fill();
-            }
-
-            update() {
-                let dx = mouse.x - this.x;
-                let dy = mouse.y - this.y;
-                let distance = Math.sqrt(dx * dx + dy * dy);
-                let forceDirectionX = dx / distance;
-                let forceDirectionY = dy / distance;
-                let maxDistance = mouse.radius;
-                let force = (maxDistance - distance) / maxDistance;
-                let directionX = forceDirectionX * force * this.density;
-                let directionY = forceDirectionY * force * this.density;
-
-                if (distance < mouse.radius) {
-                    this.x -= directionX;
-                    this.y -= directionY;
-                } else {
-                    if (this.x !== this.baseX) {
-                        let dx = this.x - this.baseX;
-                        this.x -= dx / 10;
-                    }
-                    if (this.y !== this.baseY) {
-                        let dy = this.y - this.baseY;
-                        this.y -= dy / 10;
-                    }
-                }
-            }
-        }
-
-        function initParticles() {
-            particles = [];
-            const numberOfParticles = (canvas.width * canvas.height) / 5000;
-            for (let i = 0; i < numberOfParticles; i++) {
-                let x = Math.random() * canvas.width;
-                let y = Math.random() * canvas.height;
-                particles.push(new Particle(x, y));
-            }
-        }
-
-        function animate() {
-            ctx.clearRect(0, 0, canvas.width, canvas.height);
-            for (let i = 0; i < particles.length; i++) {
-                particles[i].draw();
-                particles[i].update();
-            }
-            requestAnimationFrame(animate);
-        }
-
-        // --- 2. 交互控制 ---
-        const cursor = document.getElementById('custom-cursor');
-        
-        window.addEventListener('mousemove', (e) => {
-            mouse.x = e.x;
-            mouse.y = e.y;
-            // 光标平滑跟随
-            cursor.style.transform = `translate(${e.clientX - 10}px, ${e.clientY - 10}px)`;
-        });
-
-        // 磁性按钮效果
-        document.querySelectorAll('.card').forEach(card => {
-            card.addEventListener('mouseenter', () => {
-                cursor.style.transform += ' scale(4)';
-                cursor.style.background = 'white';
-            });
-            card.addEventListener('mouseleave', () => {
-                cursor.style.transform = cursor.style.transform.replace(' scale(4)', '');
-                cursor.style.background = 'var(--accent-color)';
-            });
-        });
-
-        // --- 3. 初始化 ---
-        initCanvas();
-        animate();
-
-        // 模拟加载后的进度条动画
-        window.addEventListener('load', () => {
-            document.querySelectorAll('.skill-progress').forEach(el => {
-                const width = el.style.width;
-                el.style.width = '0';
-                setTimeout(() => el.style.width = width, 500);
-            });
-        });
-    </script>
+  <script type="module" src="js/main.js"></script>
 </body>
 </html>

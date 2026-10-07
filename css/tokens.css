@@ -1,0 +1,30 @@
+:root {
+  --bg: #d8dde3;
+  --bg-deep: #c5ccd6;
+  --ink: #12151a;
+  --ink-soft: rgba(18, 21, 26, 0.72);
+  --ink-faint: rgba(18, 21, 26, 0.45);
+  --accent: #c45c26;
+  --accent-hover: #a84a1a;
+  --surface: rgba(255, 255, 255, 0.35);
+  --line: rgba(18, 21, 26, 0.12);
+  --line-strong: rgba(18, 21, 26, 0.22);
+
+  --font-display: "Syne", sans-serif;
+  --font-body: "IBM Plex Sans", sans-serif;
+  --font-mono: "IBM Plex Mono", monospace;
+
+  --space-xs: 0.5rem;
+  --space-sm: 1rem;
+  --space-md: 1.5rem;
+  --space-lg: 2.5rem;
+  --space-xl: 4rem;
+  --space-2xl: 7rem;
+
+  --nav-h: 4.5rem;
+  --pad-x: clamp(1.25rem, 5vw, 4rem);
+  --max-w: 72rem;
+
+  --ease-out: cubic-bezier(0.22, 1, 0.36, 1);
+  --duration: 0.7s;
+}
